@@ -1,0 +1,95 @@
+{
+  "last_node_id": 10,
+  "last_link_id": 9,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "position": [0, 0],
+      "outputs": ["IMAGE"],
+      "properties": {
+        "file": "examples/pet1.jpg"
+      }
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "position": [0, 150],
+      "outputs": ["IMAGE"],
+      "properties": {
+        "file": "examples/pet2.jpg"
+      }
+    },
+    {
+      "id": 3,
+      "type": "LoadImage",
+      "position": [0, 300],
+      "outputs": ["IMAGE"],
+      "properties": {
+        "file": "examples/pet3.jpg"
+      }
+    },
+    {
+      "id": 4,
+      "type": "ReferenceOnlyImageEncoder",
+      "position": [250, 150],
+      "inputs": {
+        "images": [1, 0]
+      },
+      "outputs": ["LATENT"]
+    },
+    {
+      "id": 5,
+      "type": "CLIPTextEncode",
+      "position": [250, 300],
+      "outputs": ["CONDITIONING"],
+      "properties": {
+        "text": "a cute dog making sushi in a traditional japanese kitchen"
+      }
+    },
+    {
+      "id": 6,
+      "type": "ApplyLoRA",
+      "position": [500, 250],
+      "inputs": {
+        "clip": [5, 0],
+        "unet": [4, 0]
+      },
+      "outputs": ["CONDITIONING", "LATENT"],
+      "properties": {
+        "lora_path": "models/loras/cute_style.safetensors",
+        "strength": 0.8
+      }
+    },
+    {
+      "id": 7,
+      "type": "KSampler",
+      "position": [750, 250],
+      "inputs": {
+        "latent": [6, 1],
+        "conditioning": [6, 0]
+      },
+      "outputs": ["LATENT"]
+    },
+    {
+      "id": 8,
+      "type": "Decode",
+      "position": [1000, 250],
+      "inputs": {
+        "latent": [7, 0]
+      },
+      "outputs": ["IMAGE"]
+    },
+    {
+      "id": 9,
+      "type": "SaveImage",
+      "position": [1250, 250],
+      "inputs": {
+        "images": [8, 0]
+      },
+      "properties": {
+        "filename_prefix": "yeschef_output"
+      }
+    }
+  ]
+}
