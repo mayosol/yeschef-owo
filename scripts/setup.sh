@@ -4,18 +4,21 @@ echo "📦 Installing system packages..."
 sudo apt update && sudo apt install -y git python3.10 python3.10-venv wget curl zip
 
 echo "🐍 Creating Python venv..."
-python3.10 -m venv venv
-source venv/bin/activate
+python3.10 -m venv chef
+source chef/bin/activate
+
+echo "💡 Installing pip (just in case)..."
+python -m ensurepip --upgrade
 pip install --upgrade pip
 
-echo "🎨 Installing ComfyUI..."
-git clone https://github.com/comfyanonymous/ComfyUI.git
-cd ComfyUI
+echo "📚 Installing required Python packages..."
+pip install pyyaml
 pip install -r requirements.txt
-cd ..
 
-echo "📁 Creating folders..."
+echo "📁 Creating project folders..."
 mkdir -p models/checkpoints models/loras workflows logs
 
-echo "✅ Setup complete!"
+echo "🔗 Initializing git submodules..."
+git submodule update --init --recursive
 
+echo "✅ All set! Activate your venv with: source chef/bin/activate"
